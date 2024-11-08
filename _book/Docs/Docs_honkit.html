@@ -106,9 +106,9 @@
         
         
     
-        <li class="chapter active" data-level="2.1" data-path="Docs.html">
+        <li class="chapter active" data-level="2.1" data-path="Docs_honkit.html">
             
-                <a href="Docs.html">
+                <a href="Docs_honkit.html">
             
                     
                     Docs
@@ -164,7 +164,7 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h2 id="table-of-contents">Table of Contents</h2>
+                                <h1 id="table-of-contents">Table of Contents</h1>
 <ul>
 <li><a href="#cotrolflow">Cotrolflow</a></li>
 <li><a href="#docs">Docs</a><ul>
@@ -190,24 +190,7 @@
 </li>
 </ul>
 <h1 id="cotrolflow">Cotrolflow</h1>
-<pre><code class="lang-mermaid">flowchart TD
-    A([Start Program]) --&gt; B[Initialize Sensor and ML Model]
-    B --&gt; C[[Main Loop]]
-
-    C --&gt;|Capture Frame| D{Detections Found?}
-    D --&gt;|Yes| E@{shape: lean-r, label: "Send DETECTED Signal to Arduino"} --&gt; F{Command from Arduino?}
-    D --&gt;|No| C
-
-    F --&gt;|VERIFY| G[Start Verification Process]
-    F --&gt;|ABORT| C
-
-    G --&gt; H{Verify Object Successful?}
-    H --&gt;|Yes| I@{shape: lean-r, label: "Send FOUND Signal to Arduino after Verification"} --&gt; K{Receive STOP Command from Arduino?}
-    H --&gt;|No| J@{shape: lean-r, label: "Send NOT_FOUND Signal to Arduino after Verification"} --&gt; C
-
-    K --&gt;|STOP| C
-    K --&gt;|No| L@{shape: lean-r, label: "Send Object Coordinates to Arduino Continuously"} --&gt; K
-</code></pre>
+<p><img src="img/Flowchart.png" alt="Controlflow"></img></p>
 <h1 id="docs">Docs</h1>
 <h2 id="wichtige-zustände">Wichtige Zustände</h2>
 <table>
@@ -424,7 +407,7 @@ sensor.set_vflip(<span class="hljs-literal">False</span>)
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Docs","level":"2.1","depth":1,"previous":{"title":"Übersicht","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Docs/Docs.md","mtime":"2024-11-08T08:52:16.413Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2024-11-08T09:26:41.454Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Docs","level":"2.1","depth":1,"previous":{"title":"Übersicht","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Docs/Docs_honkit.md","mtime":"2024-11-08T09:44:18.873Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2024-11-08T09:44:53.969Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
