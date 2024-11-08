@@ -15,7 +15,7 @@
             - [Statusnachrichten](#statusnachrichten)
         - [Asynchrone Kommunikation und Ablauf](#asynchrone-kommunikation-und-ablauf)
 
-# Cotrolflow
+# Controlflow
 
 ```mermaid
 flowchart TD

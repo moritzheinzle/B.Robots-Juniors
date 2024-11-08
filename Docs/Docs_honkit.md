@@ -15,7 +15,7 @@
             - [Statusnachrichten](#statusnachrichten)
         - [Asynchrone Kommunikation und Ablauf](#asynchrone-kommunikation-und-ablauf)
 
-# Cotrolflow
+# Controlflow
 
 ![Controlflow](img/Flowchart.png)
 
