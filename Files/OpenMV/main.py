@@ -1,6 +1,6 @@
 import time
-import pyb
-from pyb import UART
+import machine
+from machine import UART
 import math
 import sensor
 import image
@@ -17,8 +17,8 @@ NOT_FOUND = 5
 CONTINUE = 6
 STOP = 7
 
-uart = UART(3, 9600)
-p9 = pyb.Pin("P9", pyb.Pin.OUT_PP)
+uart = UART(1, 9600)
+p9 = machine.Pin("P9", machine.Pin.OUT)
 
 # Sensor Setup
 sensor.reset()
@@ -98,10 +98,10 @@ async def verify_object_async(net, min_confidence, initial_label, initial_x, ini
 
 
 async def send_coordinates_async(x, y, label):
-
     message = bytearray([x >> 8, x & 0xFF, y >> 8, y & 0xFF, label])
     uart.write(message)
     await uasyncio.sleep(0.05)
+
 
 
 async def communication_and_detection():
@@ -112,10 +112,12 @@ async def communication_and_detection():
     while True:
         img = sensor.snapshot()
         detection_list = process_frame(net, img, min_confidence)
-
+        print("main")
         if detection_list:
-            send_to_arduino(DETECTED)
+            print("dedection")
+            p9.high()
             await uasyncio.sleep(0.05)
+            p9.low()
 
             if uart.any():
                 command = uart.read().decode().strip()
@@ -157,8 +159,11 @@ async def communication_and_detection():
 
 
 def send_to_arduino(message):
+    if not isinstance(message, (bytes, bytearray)):
+        message = bytearray([message])
     uart.write(message)
     p9.high()
     time.sleep(0.05)
     p9.low()
-asyncio.run(communication_and_detection())
+
+uasyncio.run(communication_and_detection())
