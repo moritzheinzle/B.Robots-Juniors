@@ -287,6 +287,10 @@ sensor.set_vflip(<span class="hljs-literal">False</span>)
     <span class="hljs-keyword">return</span> detection_list
 </code></pre>
 <h4 id="objektverifikation">Objektverifikation</h4>
+<ul>
+<li><code>N_FRAMES</code> = Anzahl der Frames welche bei <code>verify_object_async</code> geprüft werden</li>
+<li><code>MIN_FRAMES</code> = Anzahl der Frames welche bei <code>verify_object_async</code> positv sein müssen</li>
+</ul>
 <p><code>verify_object_async</code> ermöglicht dem System die Erkennung eines bestimmten Objekts zu verifizieren. Dies wird durch die Funktion durchgeführt, die sicherstellt, dass das erkannte Objekt auch weiterhin an der gleichen Position bleibt.</p>
 <pre><code class="lang-python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">verify_object_async</span>(<span class="hljs-params">net, min_confidence, initial_label, initial_x, initial_y, n_frames=<span class="hljs-number">10</span>, min_required_detection_count=<span class="hljs-number">8</span></span>):
     detection_count = <span class="hljs-number">0</span>
@@ -407,7 +411,7 @@ sensor.set_vflip(<span class="hljs-literal">False</span>)
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Docs","level":"2.1","depth":1,"previous":{"title":"Übersicht","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Docs/Docs_honkit.md","mtime":"2024-11-08T09:44:18.873Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2024-11-08T09:44:53.969Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Docs","level":"2.1","depth":1,"previous":{"title":"Übersicht","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Docs/Docs_honkit.md","mtime":"2024-11-08T11:20:11.460Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2024-11-08T11:57:11.996Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

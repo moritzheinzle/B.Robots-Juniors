@@ -113,6 +113,8 @@ def process_frame(net, img, min_confidence):
 ```
 
 #### Objektverifikation
+- `N_FRAMES` = Anzahl der Frames welche bei `verify_object_async` geprüft werden
+- `MIN_FRAMES` = Anzahl der Frames welche bei `verify_object_async` positv sein müssen
 
 `verify_object_async` ermöglicht dem System die Erkennung eines bestimmten Objekts zu verifizieren. Dies wird durch die Funktion durchgeführt, die sicherstellt, dass das erkannte Objekt auch weiterhin an der gleichen Position bleibt.
 

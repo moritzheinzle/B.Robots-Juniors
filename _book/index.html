@@ -164,8 +164,46 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="objekterkennung-und-kommunikationssystem">Objekterkennung und Kommunikationssystem</h1>
-<p>Dieses Skript ermöglicht die Objekterkennung mit einem KI-Modell, verifiziert Objekte asynchron und kommuniziert die Koordinaten über UART an Arduino. Das System ist für den Echtzeitbetrieb mit MicroPython auf eingebetteten Geräten konzipiert und nutzt die Fähigkeiten von Kameras und neuronalen Netzen.</p>
+                                <h1 id="bilderkennung-mithilfe-einer-openmv-h7-r2">Bilderkennung mithilfe einer OpenMV H7 R2</h1>
+<p>Dieses Projekt wurde im Rahmen von <strong>B.Robots Junior</strong> entwickelt und implementiert ein System zur <strong>Objekterkennung</strong> und <strong>Verifikation</strong> für einen Roboter. Der Roboter nutzt eine Kamera und ein vortrainiertes maschinelles Lernmodell, um Objekte zu erkennen und ihre Koordinaten an ein Arduino zu senden. Das System ermöglicht es, Objekte zu verifizieren und ihre Position kontinuierlich zu überwachen.</p>
+<h2 id="docs"><a href="https://moritzheinzle.github.io/openmv-h7-machine-learning/" target="_blank">Docs</a></h2>
+<h2 id="funktionsweise">Funktionsweise</h2>
+<ul>
+<li><strong>Objekterkennung</strong>: Der Roboter nimmt mit einer Kamera Bilder auf und verwendet ein vortrainiertes TensorFlow Lite Modell, um Objekte in den Bildern zu erkennen.</li>
+<li><strong>Verifikation</strong>: Ein Benutzer kann die Verifikation eines Objekts anfordern. Der Roboter überprüft, ob das erkannte Objekt in mehreren Frames an der gleichen Position bleibt.</li>
+<li><strong>Kommunikation</strong>: Die Koordinaten des verifizierten Objekts werden über UART an ein Arduino gesendet. Das Arduino kann dann weiterverarbeiten oder reagieren.</li>
+</ul>
+<h2 id="funktionsweise-der-kommunikation">Funktionsweise der Kommunikation</h2>
+<p>Die Kommunikation zwischen dem Mikrocontroller (Pyboard) und dem Arduino erfolgt über <strong>UART</strong>. Die wichtigsten Zustände sind:</p>
+<ul>
+<li><strong>DETECTED (1)</strong>: Ein Objekt wurde erkannt.</li>
+<li><strong>VERIFY (2)</strong>: Eine Verifikation des Objekts wird angefordert.</li>
+<li><strong>ABORT (3)</strong>: Die Verifikation wird abgebrochen.</li>
+<li><strong>FOUND (4)</strong>: Das Objekt wurde erfolgreich verifiziert.</li>
+<li><strong>NOT_FOUND (5)</strong>: Die Verifikation ist fehlgeschlagen.</li>
+<li><strong>CONTINUE (6)</strong>: Das System setzt die Objekterkennung fort.</li>
+<li><strong>STOP (7)</strong>: Das System stoppt die Koordinatensendung.</li>
+</ul>
+<h2 id="hardwareanforderungen">Hardwareanforderungen</h2>
+<ul>
+<li><strong>OpenMV H7 R2</strong>: Für die Aufnahme und Verarbeitung von Bilder</li>
+<li><strong>Kommunikation</strong>: UART 3 für Kommunikation mit dem Arduino</li>
+<li><strong>Arduino Mega</strong>: Für die Verarbeitung der Koordinaten und mögliche Steuerung des Roboters</li>
+</ul>
+<h2 id="softwareanforderungen">Softwareanforderungen</h2>
+<ul>
+<li><strong>MicroPython</strong>: Das Projekt nutzt MicroPython auf dem Pyboard.</li>
+<li><strong>TensorFlow Lite</strong>: Für das maschinelle Lernmodell zur Objekterkennung.</li>
+<li><strong>Bibliotheken</strong>:<ul>
+<li><code>pyb</code>: Für die Interaktion mit der Pyboard-Hardware.</li>
+<li><code>sensor</code>: Zur Steuerung der Kamera.</li>
+<li><code>image</code>: Zur Bildverarbeitung und Blob-Erkennung.</li>
+<li><code>ml</code>: Für das Laden und Ausführen des TensorFlow Lite Modells.</li>
+<li><code>uos</code>, <code>gc</code>: Für das Dateisystem und die Speicherkontrolle.</li>
+<li><code>uasyncio</code>: Für asynchrone Aufgaben und Zeitsteuerung.</li>
+</ul>
+</li>
+</ul>
 
                                 
                                 </section>
@@ -205,7 +243,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Übersicht","level":"1.1","depth":1,"next":{"title":"Docs","level":"2.1","depth":1,"path":"Docs/Docs_honkit.md","ref":"Docs/Docs_honkit.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"README.md","mtime":"2024-11-08T08:58:14.904Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2024-11-08T09:44:53.969Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Übersicht","level":"1.1","depth":1,"next":{"title":"Docs","level":"2.1","depth":1,"path":"Docs/Docs_honkit.md","ref":"Docs/Docs_honkit.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"README.md","mtime":"2024-11-08T11:56:58.551Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2024-11-08T11:57:11.996Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
