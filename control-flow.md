@@ -1,3 +1,20 @@
+## Table of Contents
+
+- [Cotrolflow](#cotrolflow)
+- [Docs](#docs)
+    - [Wichtige Zustände](#wichtige-zustände)
+    - [Bibliotheken](#bibliotheken)
+    - [Code-Übersicht](#code-übersicht)
+        - [Initialisierung](#initialisierung)
+        - [Model Setup](#model-setup)
+        - [Erkennung und Verifikation](#erkennung-und-verifikation)
+            - [Bildverarbeitung](#bildverarbeitung)
+            - [Objektverifikation](#objektverifikation)
+        - [Kommunikation mit dem Arduino](#kommunikation-mit-dem-arduino)
+            - [Koordinaten senden](#koordinaten-senden)
+            - [Statusnachrichten](#statusnachrichten)
+        - [Asynchrone Kommunikation und Ablauf](#asynchrone-kommunikation-und-ablauf)
+
 # Cotrolflow
 
 ```mermaid
@@ -76,11 +93,10 @@ net = ml.Model("trained.tflite", load_to_fb=uos.stat('trained.tflite')[6] > (gc.
 
 ### Erkennung und Verifikation
 
-Das Hauptziel des Systems ist es, Objekte zu erkennen und ihre Koordinaten an das Arduino zu senden. Die Objekterkennung erfolgt mithilfe eines TensorFlow Lite Modells, das auf den Kamerabildern arbeitet.
+
 
 #### Bildverarbeitung
-
-Die `process_frame`-Funktion verarbeitet jedes Kamerabild, um Objekte zu erkennen, und gibt eine Liste der erkannten Objekte zurück:
+`process_frame`verarbeitet jedes Kamerabild, um Objekte zu erkennen, und gibt eine Liste der erkannten Objekte zurück:
 
 ```python
 def process_frame(net, img, min_confidence):
@@ -98,7 +114,7 @@ def process_frame(net, img, min_confidence):
 
 #### Objektverifikation
 
-Das System ermöglicht es, die Erkennung eines bestimmten Objekts zu verifizieren. Dies wird durch die Funktion `verify_object_async` durchgeführt, die sicherstellt, dass das erkannte Objekt auch weiterhin an der gleichen Position bleibt.
+`verify_object_async` ermöglicht dem System die Erkennung eines bestimmten Objekts zu verifizieren. Dies wird durch die Funktion durchgeführt, die sicherstellt, dass das erkannte Objekt auch weiterhin an der gleichen Position bleibt.
 
 ```python
 async def verify_object_async(net, min_confidence, initial_label, initial_x, initial_y, n_frames=10, min_required_detection_count=8):
@@ -116,12 +132,9 @@ async def verify_object_async(net, min_confidence, initial_label, initial_x, ini
 ```
 
 ### Kommunikation mit dem Arduino
-
-Das System sendet Koordinaten und Statusnachrichten an das Arduino über die UART-Schnittstelle.
-
 #### Koordinaten senden
 
-Die Funktion `send_coordinates_async` sendet die erkannten Koordinaten des Objekts:
+`send_coordinates_async` sendet die erkannten Koordinaten des Objekts:
 
 ```python
 async def send_coordinates_async(x, y, label):
@@ -132,7 +145,7 @@ async def send_coordinates_async(x, y, label):
 
 #### Statusnachrichten
 
-Funktion zum Senden von Statusnachrichten an das Arduino:
+`send_to_arduino` sendet Statusnachrichten (`Koordinaten`,`Label`) an den Arduino:
 
 ```python
 def send_to_arduino(message):
@@ -142,9 +155,9 @@ def send_to_arduino(message):
     p9.low()
 ```
 
-## Asynchrone Kommunikation und Ablauf
+### Asynchrone Kommunikation und Ablauf
 
-Die `communication_and_detection`-Funktion ist der Hauptsteuerfluss, der die Objekterkennung und -verifikation kombiniert und die Koordinaten an das Arduino sendet.
+`communication_and_detection` ist der Hauptsteuerfluss, der die Objekterkennung und -verifikation kombiniert und die Koordinaten an das Arduino sendet.
 
 ```python
 async def communication_and_detection():
@@ -196,13 +209,3 @@ async def communication_and_detection():
 
     send_to_arduino(STOP)
 ```
-
-## Anpassungen und Erweiterungen
-
-- **Modell**: Das verwendete Modell ist ein vortrainiertes TensorFlow Lite Modell. Es kann durch ein anderes Modell ersetzt werden, indem die `trained.tflite`-Datei aktualisiert wird.
-- **Kamera**: Die Kameraeinstellungen, wie z.B. die Auflösung oder das Farbformat, können je nach Bedarf angepasst werden.
-- **Verifikation**: Der Schwellenwert für die Verifikationsgenauigkeit (min_confidence) kann modifiziert werden, um eine genauere oder weniger strenge Verifikation zu ermöglichen.
-
-## Fazit
-
-Dieses System stellt eine einfache und effiziente Möglichkeit dar, Objekte mit einem Mikrocontroller zu erkennen und ihre Koordinaten in Echtzeit an ein externes Gerät zu senden. Es kann für verschiedenste Anwendungen wie Robotik, Sicherheitsüberwachung oder industrielle Automatisierung genutzt werden.
