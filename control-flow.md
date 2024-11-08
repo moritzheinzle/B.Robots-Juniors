@@ -1,6 +1,6 @@
 ## Cotrolflow
 
-|```mermaid
+```mermaid
 flowchart TD
     A([Start Program]) --> B[Initialize Sensor and ML Model]
     B --> C[[Main Loop]]
