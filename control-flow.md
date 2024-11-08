@@ -1,4 +1,6 @@
-```mermaid
+## Cotrolflow
+
+|```mermaid
 flowchart TD
     A([Start Program]) --> B[Initialize Sensor and ML Model]
     B --> C[[Main Loop]]
@@ -18,3 +20,4 @@ flowchart TD
     K -->|No| L@{shape: lean-r, label: "Send Object Coordinates to Arduino Continuously"} --> K
 
 ```
+## Docs
