@@ -1,6 +1,6 @@
 # Table of Contents
 
-- [Cotrolflow](#cotrolflow)
+- [Controlflow](#cotrolflow)
 - [Docs](#docs)
     - [Wichtige Zustände](#wichtige-zustände)
     - [Bibliotheken](#bibliotheken)
