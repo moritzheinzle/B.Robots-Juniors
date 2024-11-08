@@ -1,18 +1,13 @@
 #include <Arduino.h>
+#include <CameraInterrupt.h>
 
-// put function declarations here:
-int myFunction(int, int);
+CameraInterrupt cameraInterrupt;
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    cameraInterrupt.begin();  // Library initialisieren
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+    // Die Logik ist vollständig in der Interrupt-Handler-Methode untergebracht
+    // Hauptloop bleibt leer, da der Interrupt die Ausgabe übernimmt
 }

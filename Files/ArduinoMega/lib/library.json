@@ -1,0 +1,11 @@
+{
+    "name": "CameraInterrupt",
+    "version": "1.0.0",
+    "description": "Eine Library, die bei einem Interrupt auf Pin 2 den Text 'Interrupt' ausgibt.",
+    "authors": [
+        {
+            "name": "Moritz Heinzle"
+        }
+    ],
+    "license": "MIT"
+}
