@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "honkit": "^6.0.2",
+    "punycode": "^2.3.1"
+  }
+}

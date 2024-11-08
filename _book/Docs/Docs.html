@@ -1,0 +1,503 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <title>Docs · HonKit</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.0.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="../" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Übersicht
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="divider"></li>
+        
+        
+    
+        <li class="chapter active" data-level="2.1" data-path="Docs.html">
+            
+                <a href="Docs.html">
+            
+                    
+                    Docs
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            Published with HonKit
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Docs</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#cotrolflow">Cotrolflow</a></li>
+<li><a href="#docs">Docs</a><ul>
+<li><a href="#wichtige-zustände">Wichtige Zustände</a></li>
+<li><a href="#bibliotheken">Bibliotheken</a></li>
+<li><a href="#code-übersicht">Code-Übersicht</a><ul>
+<li><a href="#initialisierung">Initialisierung</a></li>
+<li><a href="#model-setup">Model Setup</a></li>
+<li><a href="#erkennung-und-verifikation">Erkennung und Verifikation</a><ul>
+<li><a href="#bildverarbeitung">Bildverarbeitung</a></li>
+<li><a href="#objektverifikation">Objektverifikation</a></li>
+</ul>
+</li>
+<li><a href="#kommunikation-mit-dem-arduino">Kommunikation mit dem Arduino</a><ul>
+<li><a href="#koordinaten-senden">Koordinaten senden</a></li>
+<li><a href="#statusnachrichten">Statusnachrichten</a></li>
+</ul>
+</li>
+<li><a href="#asynchrone-kommunikation-und-ablauf">Asynchrone Kommunikation und Ablauf</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="cotrolflow">Cotrolflow</h1>
+<pre><code class="lang-mermaid">flowchart TD
+    A([Start Program]) --&gt; B[Initialize Sensor and ML Model]
+    B --&gt; C[[Main Loop]]
+
+    C --&gt;|Capture Frame| D{Detections Found?}
+    D --&gt;|Yes| E@{shape: lean-r, label: "Send DETECTED Signal to Arduino"} --&gt; F{Command from Arduino?}
+    D --&gt;|No| C
+
+    F --&gt;|VERIFY| G[Start Verification Process]
+    F --&gt;|ABORT| C
+
+    G --&gt; H{Verify Object Successful?}
+    H --&gt;|Yes| I@{shape: lean-r, label: "Send FOUND Signal to Arduino after Verification"} --&gt; K{Receive STOP Command from Arduino?}
+    H --&gt;|No| J@{shape: lean-r, label: "Send NOT_FOUND Signal to Arduino after Verification"} --&gt; C
+
+    K --&gt;|STOP| C
+    K --&gt;|No| L@{shape: lean-r, label: "Send Object Coordinates to Arduino Continuously"} --&gt; K
+</code></pre>
+<h1 id="docs">Docs</h1>
+<h2 id="wichtige-zustände">Wichtige Zustände</h2>
+<table>
+<thead>
+<tr>
+<th>Konstante</th>
+<th>ByteValue</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DETECTED</strong></td>
+<td><code>1</code></td>
+<td>Ein Objekt wurde erkannt.</td>
+</tr>
+<tr>
+<td><strong>VERIFY</strong></td>
+<td><code>2</code></td>
+<td>Eine Verifikation des Objekts wird angefordert.</td>
+</tr>
+<tr>
+<td><strong>ABORT</strong></td>
+<td><code>3</code></td>
+<td>Die Verifikation wird abgebrochen.</td>
+</tr>
+<tr>
+<td><strong>FOUND</strong></td>
+<td><code>4</code></td>
+<td>Das Objekt wurde erfolgreich verifiziert.</td>
+</tr>
+<tr>
+<td><strong>NOT_FOUND</strong></td>
+<td><code>5</code></td>
+<td>Die Verifikation ist fehlgeschlagen.</td>
+</tr>
+<tr>
+<td><strong>CONTINUE</strong></td>
+<td><code>6</code></td>
+<td>Das System setzt die Erkennung fort.</td>
+</tr>
+<tr>
+<td><strong>STOP</strong></td>
+<td><code>7</code></td>
+<td>Das System stoppt die Koordinatensendung.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bibliotheken">Bibliotheken</h2>
+<ul>
+<li><code>pyb</code>: Für die Interaktion mit der Pyboard-Hardware.</li>
+<li><code>sensor</code>: Zum Steuern der Kamera.</li>
+<li><code>image</code>: Zur Bildverarbeitung und Blob-Erkennung.</li>
+<li><code>ml</code>: Für das Laden und Ausführen des TensorFlow Lite Modells.</li>
+<li><code>uos</code>, <code>gc</code>: Für das Dateisystem und die Speicherkontrolle.</li>
+<li><code>uasyncio</code>: Für asynchrone Aufgaben und zeitgesteuerte Operationen.</li>
+</ul>
+<h2 id="code-übersicht">Code-Übersicht</h2>
+<h3 id="initialisierung">Initialisierung</h3>
+<p>Zu Beginn werden die UART-Schnittstelle und die Kamera konfiguriert. Das maschinelle Lernmodell wird aus einer <code>.tflite</code>-Datei geladen und die Labels werden aus einer Datei <code>labels.txt</code> gelesen.</p>
+<pre><code class="lang-python">uart = UART(<span class="hljs-number">3</span>, <span class="hljs-number">9600</span>)
+sensor.reset()
+sensor.set_pixformat(sensor.RGB565)
+sensor.set_framesize(sensor.QVGA)
+sensor.set_vflip(<span class="hljs-literal">False</span>)
+
+<span class="hljs-keyword">try</span>:
+    net = ml.Model(<span class="hljs-string">"trained.tflite"</span>, load_to_fb=uos.stat(<span class="hljs-string">'trained.tflite'</span>)[<span class="hljs-number">6</span>] &gt; (gc.mem_free() - (<span class="hljs-number">64</span> * <span class="hljs-number">1024</span>)))
+<span class="hljs-keyword">except</span> Exception:
+    <span class="hljs-keyword">raise</span> Exception(<span class="hljs-string">"Error with tflite"</span>)
+
+<span class="hljs-keyword">try</span>:
+    labels = [line.rstrip(<span class="hljs-string">'\n'</span>) <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"labels.txt"</span>)]
+<span class="hljs-keyword">except</span> Exception:
+    <span class="hljs-keyword">raise</span> Exception(<span class="hljs-string">"Error with labels.txt"</span>)
+</code></pre>
+<h3 id="model-setup">Model Setup</h3>
+<p>Das Modell wird aus einer <code>.tflite</code>-Datei geladen, und falls es nicht genügend freien Speicher gibt, wird ein Fehler geworfen.</p>
+<pre><code class="lang-python">net = ml.Model(<span class="hljs-string">"trained.tflite"</span>, load_to_fb=uos.stat(<span class="hljs-string">'trained.tflite'</span>)[<span class="hljs-number">6</span>] &gt; (gc.mem_free() - (<span class="hljs-number">64</span> * <span class="hljs-number">1024</span>)))
+</code></pre>
+<h3 id="erkennung-und-verifikation">Erkennung und Verifikation</h3>
+<h4 id="bildverarbeitung">Bildverarbeitung</h4>
+<p><code>process_frame</code>verarbeitet jedes Kamerabild, um Objekte zu erkennen, und gibt eine Liste der erkannten Objekte zurück:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">process_frame</span>(<span class="hljs-params">net, img, min_confidence</span>):
+    detection_list = []
+    <span class="hljs-keyword">for</span> i, detection <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(net.predict([img], callback=fomo_post_process)):
+        <span class="hljs-keyword">if</span> i == <span class="hljs-number">0</span>: <span class="hljs-keyword">continue</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(detection) == <span class="hljs-number">0</span>: <span class="hljs-keyword">continue</span>
+        <span class="hljs-keyword">for</span> x, y, w, h, score <span class="hljs-keyword">in</span> detection:
+            <span class="hljs-keyword">if</span> score &gt;= min_confidence:
+                center_x = math.floor(x + (w / <span class="hljs-number">2</span>))
+                center_y = math.floor(y + (h / <span class="hljs-number">2</span>))
+                detection_list.append((center_x, center_y, score, i))
+    <span class="hljs-keyword">return</span> detection_list
+</code></pre>
+<h4 id="objektverifikation">Objektverifikation</h4>
+<p><code>verify_object_async</code> ermöglicht dem System die Erkennung eines bestimmten Objekts zu verifizieren. Dies wird durch die Funktion durchgeführt, die sicherstellt, dass das erkannte Objekt auch weiterhin an der gleichen Position bleibt.</p>
+<pre><code class="lang-python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">verify_object_async</span>(<span class="hljs-params">net, min_confidence, initial_label, initial_x, initial_y, n_frames=<span class="hljs-number">10</span>, min_required_detection_count=<span class="hljs-number">8</span></span>):
+    detection_count = <span class="hljs-number">0</span>
+    frame_count = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">while</span> frame_count &lt; n_frames:
+        img = sensor.snapshot()
+        detection_list = process_frame(net, img, min_confidence)
+        <span class="hljs-keyword">for</span> (center_x, center_y, score, label) <span class="hljs-keyword">in</span> detection_list:
+            <span class="hljs-keyword">if</span> score &gt;= min_confidence <span class="hljs-keyword">and</span> label == initial_label:
+                <span class="hljs-keyword">if</span> <span class="hljs-built_in">abs</span>(center_x - initial_x) &lt; <span class="hljs-number">20</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">abs</span>(center_y - initial_y) &lt; <span class="hljs-number">20</span>:
+                    detection_count += <span class="hljs-number">1</span>
+        frame_count += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> detection_count &gt;= min_required_detection_count
+</code></pre>
+<h3 id="kommunikation-mit-dem-arduino">Kommunikation mit dem Arduino</h3>
+<h4 id="koordinaten-senden">Koordinaten senden</h4>
+<p><code>send_coordinates_async</code> sendet die erkannten Koordinaten des Objekts:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">send_coordinates_async</span>(<span class="hljs-params">x, y, label</span>):
+    message = <span class="hljs-built_in">bytearray</span>([x &gt;&gt; <span class="hljs-number">8</span>, x &amp; <span class="hljs-number">0xFF</span>, y &gt;&gt; <span class="hljs-number">8</span>, y &amp; <span class="hljs-number">0xFF</span>, label])
+    uart.write(message)
+    <span class="hljs-keyword">await</span> uasyncio.sleep(<span class="hljs-number">0.05</span>)
+</code></pre>
+<h4 id="statusnachrichten">Statusnachrichten</h4>
+<p><code>send_to_arduino</code> sendet Statusnachrichten (<code>Koordinaten</code>,<code>Label</code>) an den Arduino:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">send_to_arduino</span>(<span class="hljs-params">message</span>):
+    uart.write(message)
+    p9.high()
+    time.sleep(<span class="hljs-number">0.05</span>)
+    p9.low()
+</code></pre>
+<h3 id="asynchrone-kommunikation-und-ablauf">Asynchrone Kommunikation und Ablauf</h3>
+<p><code>communication_and_detection</code> ist der Hauptsteuerfluss, der die Objekterkennung und -verifikation kombiniert und die Koordinaten an das Arduino sendet.</p>
+<pre><code class="lang-python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">communication_and_detection</span>():
+    possible = <span class="hljs-literal">False</span>
+    initial_object = <span class="hljs-literal">None</span>
+    initial_x = initial_y = <span class="hljs-literal">None</span>
+
+    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+        img = sensor.snapshot()
+        detection_list = process_frame(net, img, min_confidence)
+
+        <span class="hljs-keyword">if</span> detection_list:
+            send_to_arduino(DETECTED)
+            <span class="hljs-keyword">await</span> uasyncio.sleep(<span class="hljs-number">0.05</span>)
+
+            <span class="hljs-keyword">if</span> uart.<span class="hljs-built_in">any</span>():
+                command = uart.read().decode().strip()
+                <span class="hljs-keyword">if</span> command == <span class="hljs-built_in">str</span>(VERIFY):
+                    possible = <span class="hljs-literal">True</span>
+                    initial_object = detection_list[<span class="hljs-number">0</span>][<span class="hljs-number">3</span>]
+                    initial_x, initial_y = detection_list[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>], detection_list[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]
+                    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Verifikation gestartet. Objekt erkannt."</span>)
+                <span class="hljs-keyword">elif</span> command == <span class="hljs-built_in">str</span>(ABORT):
+                    possible = <span class="hljs-literal">False</span>
+
+            <span class="hljs-keyword">if</span> possible:
+                <span class="hljs-keyword">if</span> <span class="hljs-keyword">await</span> verify_object_async(net, min_confidence, initial_object, initial_x, initial_y):
+                    send_to_arduino(FOUND)
+                    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Verifikation erfolgreich."</span>)
+                    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+                        <span class="hljs-keyword">if</span> uart.<span class="hljs-built_in">any</span>():
+                            command = uart.read().decode().strip()
+                            <span class="hljs-keyword">if</span> command == <span class="hljs-built_in">str</span>(STOP):
+                                <span class="hljs-built_in">print</span>(<span class="hljs-string">"Abbruchbefehl empfangen. Beende die Koordinatensendung."</span>)
+                                <span class="hljs-keyword">break</span>
+                        img = sensor.snapshot()
+                        detection_list = process_frame(net, img, min_confidence)
+                        <span class="hljs-keyword">for</span> (center_x, center_y, score, label) <span class="hljs-keyword">in</span> detection_list:
+                            <span class="hljs-keyword">if</span> label == initial_object <span class="hljs-keyword">and</span> score &gt;= min_confidence:
+                                <span class="hljs-keyword">await</span> send_coordinates_async(center_x, center_y, label)
+                                <span class="hljs-keyword">await</span> uasyncio.sleep(<span class="hljs-number">0.05</span>)
+
+                <span class="hljs-keyword">else</span>:
+                    send_to_arduino(NOT_FOUND)
+                    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Verifikation fehlgeschlagen."</span>)
+                possible = <span class="hljs-literal">False</span>
+            <span class="hljs-keyword">else</span>:
+                send_to_arduino(CONTINUE)
+
+    send_to_arduino(STOP)
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Übersicht">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Docs","level":"2.1","depth":1,"previous":{"title":"Übersicht","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Docs/Docs.md","mtime":"2024-11-08T08:52:16.413Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2024-11-08T09:12:32.938Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
