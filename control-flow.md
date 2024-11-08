@@ -1,4 +1,4 @@
-## Cotrolflow
+# Cotrolflow
 
 ```mermaid
 flowchart TD
@@ -20,24 +20,18 @@ flowchart TD
     K -->|No| L@{shape: lean-r, label: "Send Object Coordinates to Arduino Continuously"} --> K
 
 ```
-## Docs
+# Docs
 
-### Wichtige Zustände
-Konstante | ByteValue | Beschreibung|
-----------|-----|-------------
-- **DETECTED**| `1`|: Ein Objekt wurde erkannt.
-- **VERIFY**| `1`| Eine Verifikation des Objekts wird angefordert.
-- **ABORT**| `1`| Die Verifikation wird abgebrochen.
-- **FOUND**| `1`| Das Objekt wurde erfolgreich verifiziert.
-- **NOT_FOUND**| `1`| Die Verifikation ist fehlgeschlagen.
-- **CONTINUE**| `1`| Das System setzt die Erkennung fort.
-- **STOP**| `1`| Das System stoppt die Koordinatensendung.
-
-## Hardware
-
-- **Mikrocontroller**: Pyboard (MicroPython)
-- **Kamera**: QVGA mit RGB565 Format
-- **UART**: UART 3 für Kommunikation mit einem Arduino
+## Wichtige Zustände
+| Konstante     | ByteValue | Beschreibung|
+|---------------|-----------|-------------
+| **DETECTED**  | `1`       |Ein Objekt wurde erkannt.                          |
+| **VERIFY**    | `2`       |Eine Verifikation des Objekts wird angefordert.    |  
+| **ABORT**     | `3`       |Die Verifikation wird abgebrochen.                 |
+| **FOUND**     | `4`       |Das Objekt wurde erfolgreich verifiziert.          |
+| **NOT_FOUND** | `5`       |Die Verifikation ist fehlgeschlagen.               |
+| **CONTINUE**  | `6`       |Das System setzt die Erkennung fort.               |   
+| **STOP**      | `7`       |Das System stoppt die Koordinatensendung.          |
 
 ## Bibliotheken
 
@@ -60,6 +54,16 @@ sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
 sensor.set_framesize(sensor.QVGA)
 sensor.set_vflip(False)
+
+try:
+    net = ml.Model("trained.tflite", load_to_fb=uos.stat('trained.tflite')[6] > (gc.mem_free() - (64 * 1024)))
+except Exception:
+    raise Exception("Error with tflite")
+
+try:
+    labels = [line.rstrip('\n') for line in open("labels.txt")]
+except Exception:
+    raise Exception("Error with labels.txt")
 ```
 
 ### Model Setup
