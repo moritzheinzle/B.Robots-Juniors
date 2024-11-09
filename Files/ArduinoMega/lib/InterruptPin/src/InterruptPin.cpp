@@ -1,11 +1,12 @@
 #include "InterruptPin.h"
 
-static bool InterruptPin::isISRRunning = false;
+volatile bool InterruptPin::isISRRunning = false;  // Define static volatile variable
+
 void (*InterruptPin::userISR)() = nullptr;
 void (*InterruptPin::customISR)() = nullptr;
 bool InterruptPin::reEntryAllowed = false;
 
-InterruptPin::InterruptPin(int pin, void (*ISR)(), int mode, bool reEntryAllowed)
+InterruptPin::InterruptPin(int pin, void (*ISR)(), Mode mode, bool reEntryAllowed)
     : pin(pin), mode(mode) {
     setCustomISR(ISR);
     allowReEntry(reEntryAllowed);
@@ -20,8 +21,16 @@ void InterruptPin::disable() {
 }
 
 void InterruptPin::handleInterrupt() {
-    isISRRunning = true;
+    cli(); 
+    if (isISRRunning) {
+        return;
+    }
 
+    // Disable interrupts globally to prevent re-entry during ISR
+    cli(); // Disable global interrupts
+
+    isISRRunning = true;
+    
     if (customISR) {
         if (reEntryAllowed || !interruptIsInISR()) {
             customISR();
@@ -34,7 +43,11 @@ void InterruptPin::handleInterrupt() {
     }
 
     isISRRunning = false;
+
+    // Re-enable global interrupts after ISR is done
+    sei(); // Enable global interrupts
 }
+
 
 bool InterruptPin::interruptIsInISR() {
     return isISRRunning;

@@ -1,28 +1,38 @@
-#ifndef INTERRUPT_PIN_H
-#define INTERRUPT_PIN_H
+#ifndef INTERRUPTPIN_H
+#define INTERRUPTPIN_H
 
 #include <Arduino.h>
 
 class InterruptPin {
 public:
-    static bool isISRRunning;
-    static void (*userISR)();
-    static void (*customISR)();
-    static bool reEntryAllowed;
+    static volatile bool isISRRunning;  // Declare as volatile and static
 
-    InterruptPin(int pin, void (*ISR)(), int mode, bool reEntryAllowed = false);
+    typedef enum {
+        INT_RISING = RISING,
+        INT_FALLING = FALLING,
+        INT_CHANGE = CHANGE
+    } Mode;
+
+    InterruptPin(int pin, void (*ISR)(), Mode mode, bool reEntryAllowed = false);
+
     void enable();
     void disable();
 
     static void handleInterrupt();
-    static bool interruptIsInISR();
-    void setUserISR(void (*ISR)());
-    void setCustomISR(void (*ISR)());
-    void allowReEntry(bool allowed);
+
+    static void setUserISR(void (*ISR)());
+    static void setCustomISR(void (*ISR)());
+    static void allowReEntry(bool allowed);
 
 private:
+    static bool interruptIsInISR();
+
     int pin;
-    int mode;
+    Mode mode;
+
+    static void (*userISR)();
+    static void (*customISR)();
+    static bool reEntryAllowed;
 };
 
-#endif // INTERRUPT_PIN_H
+#endif // INTERRUPTPIN_H
