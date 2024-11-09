@@ -1,13 +1,14 @@
 #include "CameraInterrupt.h"
 
-CameraInterrupt::CameraInterrupt(int pin, InterruptPin::Mode mode, bool reEntryAllowed)
-    : interruptPin(pin, handleCameraISR, mode, reEntryAllowed) {}
-
-e
-void CameraInterrupt::begin() {
+void CameraInterrupt::cameraISR() {
+    Serial.println("Camera interrupt triggered!");
+}
+CameraInterrupt::CameraInterrupt(int pin, InterruptMode mode, bool reEntryAllowed)
+    : interruptPin(pin, cameraISR, mode, reEntryAllowed) {
+}
+void CameraInterrupt::enable() {
     interruptPin.enable();
 }
-
-void CameraInterrupt::handleCameraISR() {
-    
+void CameraInterrupt::disable() {
+    interruptPin.disable();
 }

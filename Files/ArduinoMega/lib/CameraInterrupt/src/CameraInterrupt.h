@@ -2,17 +2,15 @@
 #define CAMERA_INTERRUPT_H
 
 #include "InterruptPin.h"
-
 class CameraInterrupt {
 public:
-    CameraInterrupt(int pin, InterruptPin::Mode mode, bool reEntryAllowed);
-    void begin();
-    int getInterruptCount() const;
+    CameraInterrupt(int pin, InterruptMode mode = InterruptMode::INT_RISING, bool reEntryAllowed = false);
+    void enable();
+    void disable();
 
 private:
+    static void cameraISR();
     InterruptPin interruptPin;
-    static void handleCameraISR();
-    static volatile int interruptCount;
 };
 
-#endif
+#endif // CAMERA_INTERRUPT_H
