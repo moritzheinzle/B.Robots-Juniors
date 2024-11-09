@@ -1,20 +1,21 @@
-#ifndef INTERRUPTPIN_H
-#define INTERRUPTPIN_H
+#ifndef INTERRUPT_PIN_H
+#define INTERRUPT_PIN_H
 
 #include <Arduino.h>
 
 class InterruptPin {
 public:
-    InterruptPin(int pin, void (*isr)(), bool allowReentry = false, int edge = RISING);
-    void begin();
-    static void interruptHandler();
+    static volatile bool isISRRunning;
+    static void (*userISR)();
+    static void (*customISR)();
+    static bool reEntryAllowed;
 
-private:
-    int _pin;
-    static void (*_isr)();  // Funktion als statische Variable speichern
-    static bool _isrRunning;
-    static bool _allowReentry;
-    static int _edge;
+    static void handleInterrupt();
+    static bool interruptIsInISR();
+
+    static void setUserISR(void (*ISR)());
+    static void setCustomISR(void (*ISR)());
+    static void allowReEntry(bool allowed);
 };
 
 #endif
