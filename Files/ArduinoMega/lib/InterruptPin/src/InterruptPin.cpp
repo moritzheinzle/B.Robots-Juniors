@@ -1,23 +1,19 @@
 #include "InterruptPin.h"
-#include <Arduino.h>
 
-volatile bool InterruptPin::isISRRunning = false;
+static bool InterruptPin::isISRRunning = false;
 void (*InterruptPin::userISR)() = nullptr;
 void (*InterruptPin::customISR)() = nullptr;
 bool InterruptPin::reEntryAllowed = false;
 
-InterruptPin::InterruptPin(int pin, void (*ISR)(), InterruptMode mode, bool reEntryAllowed)
+InterruptPin::InterruptPin(int pin, void (*ISR)(), int mode, bool reEntryAllowed)
     : pin(pin), mode(mode) {
     setCustomISR(ISR);
     allowReEntry(reEntryAllowed);
 }
 
 void InterruptPin::enable() {
-    attachInterrupt(digitalPinToInterrupt(pin), handleInterrupt, 
-        mode == InterruptMode::INT_RISING ? RISING : 
-        mode == InterruptMode::INT_FALLING ? FALLING : CHANGE);
+    attachInterrupt(digitalPinToInterrupt(pin), handleInterrupt, mode);
 }
-
 
 void InterruptPin::disable() {
     detachInterrupt(digitalPinToInterrupt(pin));

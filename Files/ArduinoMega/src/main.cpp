@@ -1,13 +1,13 @@
 #include <Arduino.h>
-#include <CameraInterrupt.h>
+#include "CameraInterrupt.h"
 
-CameraInterrupt cameraInterrupt(2, InterruptPin::Mode::INT_FALLING, false);
+CameraInterrupt cameraInterrupt(2, RISING, true);
 
 void setup() {
     Serial.begin(9600);
-    cameraInterrupt.begin();
+    cameraInterrupt.enable();
 }
 
 void loop() {
-    // Die serielle Ausgabe wird im ISR-Handler behandelt
+    delay(1000);
 }
