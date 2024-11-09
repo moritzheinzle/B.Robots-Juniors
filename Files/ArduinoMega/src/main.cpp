@@ -1,12 +1,12 @@
-#include <Arduino.h>
-#include "CameraInterrupt.h"
+#include <CameraInterrupt.h>
 
-CameraInterrupt interruptHandler(2);
+CameraInterrupt cameraInterrupt(2);  // Beispiel: Pin 2 für den Interrupt
 
 void setup() {
-  Serial.begin(9600);
-  interruptHandler.begin();
+    Serial.begin(9600);
+    cameraInterrupt.begin();  // Startet den Interrupt auf Pin 2
 }
 
 void loop() {
+    // Deine Hauptlogik hier
 }
