@@ -16,11 +16,11 @@ private:
     unsigned long _debounceDelay;
     unsigned long _lastTriggerTime;
     bool _isrHandled;
-    static CameraInterrupt* instance;  // Static instance pointer
+    static CameraInterrupt* instance; 
     void (*_isrHandler)();
 
-    static void handleISR();  // Static ISR handler
-    void resetInterrupt();    // Non-static reset method
+    static void handleISR();  
+    void resetInterrupt();  
 };
 
-#endif // CAMERA_INTERRUPT_H
+#endif 

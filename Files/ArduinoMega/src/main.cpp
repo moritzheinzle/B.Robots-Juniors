@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "CameraInterrupt.h"
 
-CameraInterrupt cameraInterrupt(2, RISING, 1000);  // 500ms debounce delay
+CameraInterrupt cameraInterrupt(2, RISING, 1000);  
 
 void userDefinedISR() {
     for (int i = 0; i < 500; i++) {
@@ -12,7 +12,7 @@ void userDefinedISR() {
 void setup() {
     Serial.begin(9600);
     cameraInterrupt.begin();
-    cameraInterrupt.setISRHandler(userDefinedISR);  // Set the user-defined ISR
+    cameraInterrupt.setISRHandler(userDefinedISR); 
 }
 
 void loop() {
