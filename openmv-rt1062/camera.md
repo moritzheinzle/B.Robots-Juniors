@@ -1,22 +1,5 @@
 # camera
 
-### Table of Contents
-
-* [Controlflow](camera.md#controlflow)
-* [Docs](camera.md#docs)
-  * [Wichtige Zustände](broken-reference)
-  * [Bibliotheken](broken-reference)
-  * [Code-Übersicht](broken-reference)
-    * [Initialisierung](broken-reference)
-    * [Model Setup](broken-reference)
-    * [Erkennung und Verifikation](broken-reference)
-      * [Bildverarbeitung](broken-reference)
-      * [Objektverifikation](broken-reference)
-    * [Kommunikation mit dem Arduino](broken-reference)
-      * [Koordinaten senden](broken-reference)
-      * [Statusnachrichten](broken-reference)
-    * [Asynchrone Kommunikation und Ablauf](broken-reference)
-
 ## Controlflow
 
 ```mermaid
@@ -24,10 +7,11 @@ graph TD;
 A([Start Program]) --> B[Initialize Sensor and ML Model]
 B --> C[[Main Loop]]
 C -->|Capture Frame| D{Detections Found?}
-D -->|Yes| E[Send DETECTED Signal to Arduino]--> F[Command from Arduino?]
+D -->|No| C
+D -->|Yes| E[Set P9 high for Interrupt]--> F{Command from Arduino?}
 
 F -->|VERIFY| G[Start Verification Process]
-F -->|ABORT| C
+F -->|NOT_VERIFY| C
 
 G --> H{Verify Object Successful?}
 H -->|Yes| I[Send FOUND Signal to Arduino after Verification] --> K{Receive STOP Command from Arduino?}
@@ -41,15 +25,14 @@ K -->|No| L[Send Object Coordinates to Arduino Continuously] --> K
 
 ### Wichtige Zustände
 
-| Konstante      | ByteValue | Beschreibung                                    |
-| -------------- | --------- | ----------------------------------------------- |
-| **DETECTED**   | `1`       | Ein Objekt wurde erkannt.                       |
-| **VERIFY**     | `2`       | Eine Verifikation des Objekts wird angefordert. |
-| **ABORT**      | `3`       | Die Verifikation wird abgebrochen.              |
-| **FOUND**      | `4`       | Das Objekt wurde erfolgreich verifiziert.       |
-| **NOT\_FOUND** | `5`       | Die Verifikation ist fehlgeschlagen.            |
-| **CONTINUE**   | `6`       | Das System setzt die Erkennung fort.            |
-| **STOP**       | `7`       | Das System stoppt die Koordinatensendung.       |
+| Konstante       | ByteValue | Beschreibung                                    |
+| --------------- | --------- | ----------------------------------------------- |
+| **VERIFY**      | `2`       | Eine Verifikation des Objekts wird angefordert. |
+| **NOT\_VERIFY** | `3`       | Die Verifikation wird abgebrochen.              |
+| **FOUND**       | `4`       | Das Objekt wurde erfolgreich verifiziert.       |
+| **NOT\_FOUND**  | `5`       | Die Verifikation ist fehlgeschlagen.            |
+| **CONTINUE**    | `6`       | Das System setzt die Erkennung fort.            |
+| **STOP**        | `7`       | Das System stoppt die Koordinatensendung.       |
 
 ### Bibliotheken
 
