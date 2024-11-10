@@ -30,6 +30,8 @@ sensor.set_vflip(False)
 net = None
 labels = None
 min_confidence = 0.95
+n_frames = 10
+min_frames = 8
 
 try:
     net = ml.Model("trained.tflite", load_to_fb=uos.stat('trained.tflite')[6] > (gc.mem_free() - (64 * 1024)))
@@ -102,7 +104,13 @@ async def send_coordinates_async(x, y, label):
     uart.write(message)
     await uasyncio.sleep(0.05)
 
-
+def send_to_arduino(message):
+    if not isinstance(message, (bytes, bytearray)):
+        message = bytearray([message])
+    uart.write(message)
+    p9.high()
+    time.sleep(0.05)
+    p9.low()
 
 async def communication_and_detection():
     possible = False
@@ -114,7 +122,7 @@ async def communication_and_detection():
         detection_list = process_frame(net, img, min_confidence)
         print("main")
         if detection_list:
-            print("dedection")
+            print("dedection") #Debugging
             p9.high()
             await uasyncio.sleep(0.05)
             p9.low()
@@ -130,7 +138,7 @@ async def communication_and_detection():
                     possible = False
 
             if possible:
-                if await verify_object_async(net, min_confidence, initial_object, initial_x, initial_y):
+                if await verify_object_async(net, min_confidence, initial_object, initial_x, initial_y, n_frames, min_frames):
                     send_to_arduino(FOUND)
                     print("Verifikation erfolgreich.")
                     while True:
@@ -158,12 +166,6 @@ async def communication_and_detection():
     send_to_arduino(STOP)
 
 
-def send_to_arduino(message):
-    if not isinstance(message, (bytes, bytearray)):
-        message = bytearray([message])
-    uart.write(message)
-    p9.high()
-    time.sleep(0.05)
-    p9.low()
+
 
 uasyncio.run(communication_and_detection())
