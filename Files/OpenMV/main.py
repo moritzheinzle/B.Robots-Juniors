@@ -16,6 +16,9 @@ FOUND = 4
 NOT_FOUND = 5
 CONTINUE = 6
 STOP = 7
+FORWARD = 1
+BACKWARDS = 2
+STOP = 3
 
 uart = UART(1, 9600)
 p9 = machine.Pin("P9", machine.Pin.OUT)
@@ -99,9 +102,13 @@ async def verify_object_async(net, min_confidence, initial_label, initial_x, ini
     return detection_count >= min_required_detection_count
 
 
-async def send_coordinates_async(x, y, label):
-    message = bytearray([x >> 8, x & 0xFF, y >> 8, y & 0xFF, label])
-    uart.write(message)
+async def send_command_async(x):
+    if x < 10:
+        send_to_arduino(FORWARD)
+    elif x > 10:
+        send_to_arduino(BACKWARDS)
+    else:
+        send_to_arduino(STOP)
     await uasyncio.sleep(0.05)
 
 def send_to_arduino(message):
@@ -122,9 +129,9 @@ async def communication_and_detection():
         detection_list = process_frame(net, img, min_confidence)
         print("main")
         if detection_list:
-            print("dedection") #Debugging
+            print("detection")  # Debugging
             p9.high()
-            await uasyncio.sleep(0.05)
+            await uasyncio.sleep(1)
             p9.low()
 
             if uart.any():
@@ -133,37 +140,38 @@ async def communication_and_detection():
                     possible = True
                     initial_object = detection_list[0][3]
                     initial_x, initial_y = detection_list[0][0], detection_list[0][1]
-                    print("Verifikation gestartet. Objekt erkannt.")
+                    print("Verification started. Object detected.")
                 elif command == str(ABORT):
                     possible = False
 
             if possible:
-                if await verify_object_async(net, min_confidence, initial_object, initial_x, initial_y, n_frames, min_frames):
+                if await verify_object_async(net, min_confidence, initial_object, initial_x, initial_y):
                     send_to_arduino(FOUND)
-                    print("Verifikation erfolgreich.")
+                    print("Verification successful.")
                     while True:
                         if uart.any():
                             command = uart.read().decode().strip()
                             if command == str(STOP):
-                                print("Abbruchbefehl empfangen. Beende die Koordinatensendung.")
+                                print("Stop command received. Ending coordinate sending.")
                                 break
 
                         img = sensor.snapshot()
                         detection_list = process_frame(net, img, min_confidence)
-
                         for (center_x, center_y, score, label) in detection_list:
                             if label == initial_object and score >= min_confidence:
-                                await send_coordinates_async(center_x, center_y, label)
+                                await send_command_async(center_x)
                                 await uasyncio.sleep(0.05)
 
                 else:
                     send_to_arduino(NOT_FOUND)
-                    print("Verifikation fehlgeschlagen.")
+                    print("Verification failed.")
                 possible = False
             else:
                 send_to_arduino(CONTINUE)
 
     send_to_arduino(STOP)
+
+
 
 
 

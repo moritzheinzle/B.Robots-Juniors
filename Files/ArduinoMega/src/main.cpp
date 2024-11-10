@@ -3,19 +3,24 @@
 
 CameraInterrupt cameraInterrupt(2, RISING, 1000);  
 
-void userDefinedISR() {
-    for (int i = 0; i < 500; i++) {
-        Serial.println(i);
-    }
+void CameraISR() {
+    /*
+    Check if detection is possible
+    Send signal to camera if detection is possible
+    Camera does verification
+    If verification is successful, camera will send drive commands to arduino
+       
+    */
 }
 
 void setup() {
     Serial.begin(9600);
     cameraInterrupt.begin();
-    cameraInterrupt.setISRHandler(userDefinedISR); 
+    cameraInterrupt.setISRHandler(CameraISR); 
 }
 
 void loop() {
-    Serial.println("Looping...");
-    delay(1000);
+    for (int i = 0; i < 500; i++) {
+        Serial.println(i);
+    }
 }
