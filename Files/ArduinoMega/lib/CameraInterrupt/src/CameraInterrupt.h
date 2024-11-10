@@ -1,19 +1,26 @@
-#ifndef CAMERAINTERRUPT_H
-#define CAMERAINTERRUPT_H
+#ifndef CAMERA_INTERRUPT_H
+#define CAMERA_INTERRUPT_H
 
-#include "InterruptPin.h"
+#include <Arduino.h>
 
 class CameraInterrupt {
 public:
-    CameraInterrupt(int pin, InterruptPin::Mode mode, bool reEntryAllowed = false);
-
-    void enable();
-    void disable();
-
-    static void cameraISR();
+    CameraInterrupt(uint8_t interruptPin, int mode, unsigned long debounceDelay = 500);
+    void begin();
+    void end();
+    void setISRHandler(void (*handler)());
 
 private:
-    InterruptPin interruptPin;
+    uint8_t _interruptPin;
+    int _mode;
+    unsigned long _debounceDelay;
+    unsigned long _lastTriggerTime;
+    bool _isrHandled;
+    static CameraInterrupt* instance;  // Static instance pointer
+    void (*_isrHandler)();
+
+    static void handleISR();  // Static ISR handler
+    void resetInterrupt();    // Non-static reset method
 };
 
-#endif // CAMERAINTERRUPT_H
+#endif // CAMERA_INTERRUPT_H
