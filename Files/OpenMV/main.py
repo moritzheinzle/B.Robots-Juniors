@@ -9,9 +9,8 @@ import gc
 import ml
 import uasyncio
 
-DETECTED = 1
-VERIFY = 2
-ABORT = 3
+VERIFIED = 2
+NOT_VERIFIED = 3
 FOUND = 4
 NOT_FOUND = 5
 CONTINUE = 6
@@ -115,9 +114,6 @@ def send_to_arduino(message):
     if not isinstance(message, (bytes, bytearray)):
         message = bytearray([message])
     uart.write(message)
-    p9.high()
-    time.sleep(0.05)
-    p9.low()
 
 async def communication_and_detection():
     possible = False
@@ -131,17 +127,14 @@ async def communication_and_detection():
         if detection_list:
             print("detection")  # Debugging
             p9.high()
-            await uasyncio.sleep(1)
-            p9.low()
-
             if uart.any():
                 command = uart.read().decode().strip()
-                if command == str(VERIFY):
+                if command == str(VERIFIED):
                     possible = True
                     initial_object = detection_list[0][3]
                     initial_x, initial_y = detection_list[0][0], detection_list[0][1]
                     print("Verification started. Object detected.")
-                elif command == str(ABORT):
+                elif command == str(NOT_VERIFIED):
                     possible = False
 
             if possible:
@@ -153,6 +146,7 @@ async def communication_and_detection():
                             command = uart.read().decode().strip()
                             if command == str(STOP):
                                 print("Stop command received. Ending coordinate sending.")
+                                p9.low()
                                 break
 
                         img = sensor.snapshot()
@@ -166,10 +160,8 @@ async def communication_and_detection():
                     send_to_arduino(NOT_FOUND)
                     print("Verification failed.")
                 possible = False
-            else:
-                send_to_arduino(CONTINUE)
 
-    send_to_arduino(STOP)
+
 
 
 
